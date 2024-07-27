@@ -78,6 +78,9 @@ QuoteDate datetime
 CustomerID uniqueidentifier [ref: > Customer.ID] 
 TypeID uniqueidentifier   [ref: > ty.ID ,  note: 'Sale or Rental']  
 TotalAmount money
+Discount money
+AdjustmentAmount money
+NetAmount money 
 DeliveryTerms string
 PaymentTerms string
 ExpirationDate Date 
@@ -123,6 +126,9 @@ ReferenceNumber string
 CustomerID uniqueidentifier [ref: > Customer.ID] 
 TypeID uniqueidentifier   [ref: > ty.ID ,  note: 'Sale or Rental']  
 TotalAmount money
+Discount money 
+AdjustmentAmount money 
+NetAmount money 
 DeliveryTerms string
 PaymentTerms string
 ValidUntil datetime
