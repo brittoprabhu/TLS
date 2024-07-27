@@ -1,0 +1,260 @@
+//// Docs: https://dbml.dbdiagram.io/docs
+//// -- LEVEL 1
+//// -- Schemas, Tables and References
+
+// Creating tables
+// You can define the tables with full schema names
+
+Table Company {
+ID uniqueidentifier [PK]
+CompanyName  sring
+Address1 string
+Address2 String
+State string
+City string
+PinCode string
+Contact string
+EmailID string
+CreatedOn datetime
+ModifiedOn datetime
+CreatedBy string
+ModifiedBy  string
+}
+
+Table Customer{
+
+ID  uniqueidentifier [PK]
+Name string 
+CompanyName string 
+Address1 string
+Address2  string
+Address3  string
+RegisterDate Datetime
+ContactPerson string
+Email string
+GSTIN string
+UIN string
+CreatedOn datetime
+ModifiedOn datetime
+CreatedBy string
+ModifiedBy  string
+}
+
+
+Table Product as p
+{
+ID uniqueidentifier [PK]
+Name varchar(200) UNIQUE 
+FullName string
+Price money
+Stock int
+}
+
+
+
+Table ProductActivityHistory as pah
+{
+ID uniqueidentifier [PK]
+ProductID uniqueidentifier [ref: > p.ID]
+Name varchar(200) UNIQUE 
+ReferenceType varchar(100)
+ReferenceID uniqueidentifier
+Stock int
+
+}
+
+
+Table SaleQuote as sq{
+
+ID  uniqueidentifier  [PK]
+Name string
+QuoteDate datetime
+CustomerID uniqueidentifier [ref: > Customer.ID] 
+TotalAmount money
+DeliveryTerms string
+PaymentTerms string
+ExpirationDate Date 
+AdditionalTerms string
+CreatedOn datetime
+ModifiedOn datetime
+CreatedBy string
+ModifiedBy  string
+
+}
+
+
+
+
+Table SaleQuoteLine as sql
+{
+
+ID  uniqueidentifier [PK]
+Name sring
+LineNo  int
+SaleQuoteID uniqueidentifier [ref: > sq.ID]
+ProductID uniqueidentifier [ref: > p.ID]
+Quantity int
+UnitCost money
+TotalAmount money
+CreatedOn datetime
+ModifiedOn datetime
+CreatedBy string
+ModifiedBy  string
+
+Indexes {
+    (ID, LineNo) [pk] 
+  }
+}
+
+
+Table SaleInvoice as si{
+
+ID  uniqueidentifier [PK]
+Name string
+InvoiceDate datetime
+CustomerID uniqueidentifier [ref: > Customer.ID] 
+//TypeID uniqueidentifier   [ref: > ty.ID ,  note: 'Sale or Rental']  
+TotalAmount money
+DeliveryTerms string
+PaymentTerms string
+ValidUntil datetime
+AdditionalTerms string
+CreatedOn datetime
+ModifiedOn datetime
+CreatedBy string
+ModifiedBy  string
+
+}
+
+
+
+
+Table SaleInvoiceLine as sil
+{
+
+ID  uniqueidentifier [pk]
+Name sring
+LineNo  int
+SaleInvoiceID uniqueidentifier [ref: > si.ID]
+ProductID uniqueidentifier [ref: > p.ID]
+Quantity int  [default: 1]
+UnitCost money 
+TotalAmount money
+CreatedOn datetime
+ModifiedOn datetime
+CreatedBy string
+ModifiedBy  string
+
+ Indexes {
+    (SaleInvoiceID, LineNo) [unique]
+  }
+}
+
+Table RentalQuote as rq{
+
+ID  uniqueidentifier  [PK]
+Name string
+RentalQuoteDate datetime
+CustomerID uniqueidentifier [ref: > Customer.ID] 
+TotalAmount money
+DeliveryTerms string
+PaymentTerms string
+ExpirationDate Date 
+AdditionalTerms string
+CreatedOn datetime
+ModifiedOn datetime
+CreatedBy string
+ModifiedBy  string
+}
+
+
+
+
+Table RentalQuoteLine as rql
+{
+
+ID  uniqueidentifier [PK]
+Name sring
+LineNo  int
+RentalQuoteID uniqueidentifier [ref: > rq.ID]
+ProductID uniqueidentifier [ref: > p.ID]
+Quantity int
+UnitCost money
+TotalAmount money
+CreatedOn datetime
+ModifiedOn datetime
+CreatedBy string
+ModifiedBy  string
+
+Indexes {
+    (ID, LineNo) [pk] 
+  }
+}
+
+
+
+Table RentalInvoice as ri{
+
+ID  uniqueidentifier [PK]
+Name string
+InvoiceDate datetime
+CustomerID uniqueidentifier [ref: > Customer.ID] 
+//TypeID uniqueidentifier   [ref: > ty.ID ,  note: 'Sale or Rental']  
+TotalAmount money
+DeliveryTerms string
+PaymentTerms string
+ValidUntil datetime
+AdditionalTerms string
+RentalStartDate DATE 
+RentalEndDate DATE
+CreatedOn datetime
+ModifiedOn datetime
+CreatedBy string
+ModifiedBy  string
+
+
+}
+
+
+
+
+Table RentalInvoiceLine as ril
+{
+
+ID  uniqueidentifier [pk]
+Name sring
+LineNo  int
+RentalInvoiceID uniqueidentifier [ref: > ri.ID]
+ProductID uniqueidentifier [ref: > p.ID]
+Quantity int  [default: 1]
+UnitCost money 
+TotalAmount money
+CreatedOn datetime
+ModifiedOn datetime
+CreatedBy string
+ModifiedBy  string
+
+ Indexes {
+    (RentalInvoiceID, LineNo) [unique]
+  }
+}
+
+
+// If schema name is omitted, it will default to "public" schema.
+Table users as U {
+  ID uniqueidentifier [pk]
+  Name varchar
+  CreatedOn datetime
+  ModifiedOn datetime
+  CreatedBy string
+  ModifiedBy  string
+
+  
+}
+// Creating references
+// You can also define relaionship separately
+// > many-to-one; < one-to-many; - one-to-one; <> many-to-many
+//Ref: U.country_code > countries.code  
+//Ref: ecommerce.merchants.country_code > countries.code
+
+//----------------------------------------------//
