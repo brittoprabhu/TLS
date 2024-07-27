@@ -40,6 +40,12 @@ CreatedBy string
 ModifiedBy  string
 }
 
+Table Type as ty{
+
+ID uniqueidentifier [PK]
+Name varchar(10) UNIQUE 
+
+}
 
 Table Product as p
 {
@@ -64,12 +70,13 @@ Stock int
 }
 
 
-Table SaleQuote as sq{
+Table Quote as q{
 
 ID  uniqueidentifier  [PK]
 Name string
 QuoteDate datetime
 CustomerID uniqueidentifier [ref: > Customer.ID] 
+TypeID uniqueidentifier   [ref: > ty.ID ,  note: 'Sale or Rental']  
 TotalAmount money
 DeliveryTerms string
 PaymentTerms string
@@ -85,13 +92,13 @@ ModifiedBy  string
 
 
 
-Table SaleQuoteLine as sql
+Table QuoteLine as ql
 {
 
 ID  uniqueidentifier [PK]
 Name sring
 LineNo  int
-SaleQuoteID uniqueidentifier [ref: > sq.ID]
+QuoteID uniqueidentifier [ref: > q.ID]
 ProductID uniqueidentifier [ref: > p.ID]
 Quantity int
 UnitCost money
@@ -107,13 +114,14 @@ Indexes {
 }
 
 
-Table SaleInvoice as si{
+Table Invoice as i{
 
 ID  uniqueidentifier [PK]
 Name string
 InvoiceDate datetime
+ReferenceNumber string
 CustomerID uniqueidentifier [ref: > Customer.ID] 
-//TypeID uniqueidentifier   [ref: > ty.ID ,  note: 'Sale or Rental']  
+TypeID uniqueidentifier   [ref: > ty.ID ,  note: 'Sale or Rental']  
 TotalAmount money
 DeliveryTerms string
 PaymentTerms string
@@ -127,15 +135,13 @@ ModifiedBy  string
 }
 
 
-
-
-Table SaleInvoiceLine as sil
+Table InvoiceLine as sil
 {
 
 ID  uniqueidentifier [pk]
 Name sring
 LineNo  int
-SaleInvoiceID uniqueidentifier [ref: > si.ID]
+InvoiceID uniqueidentifier [ref: > i.ID]
 ProductID uniqueidentifier [ref: > p.ID]
 Quantity int  [default: 1]
 UnitCost money 
@@ -146,20 +152,24 @@ CreatedBy string
 ModifiedBy  string
 
  Indexes {
-    (SaleInvoiceID, LineNo) [unique]
+    (InvoiceID, LineNo) [unique]
   }
 }
 
-Table RentalQuote as rq{
+
+
+Table RecurringInvoice as ri{
 
 ID  uniqueidentifier  [PK]
 Name string
-RentalQuoteDate datetime
 CustomerID uniqueidentifier [ref: > Customer.ID] 
 TotalAmount money
 DeliveryTerms string
 PaymentTerms string
-ExpirationDate Date 
+Frequency string //Monthly
+StartDate Date 
+EndDate Date 
+Active boolean
 AdditionalTerms string
 CreatedOn datetime
 ModifiedOn datetime
@@ -170,13 +180,13 @@ ModifiedBy  string
 
 
 
-Table RentalQuoteLine as rql
+Table RecurringInvoiceLine as rql
 {
 
 ID  uniqueidentifier [PK]
 Name sring
 LineNo  int
-RentalQuoteID uniqueidentifier [ref: > rq.ID]
+RecurringInvoiceID uniqueidentifier [ref: > ri.ID]
 ProductID uniqueidentifier [ref: > p.ID]
 Quantity int
 UnitCost money
@@ -192,52 +202,6 @@ Indexes {
 }
 
 
-
-Table RentalInvoice as ri{
-
-ID  uniqueidentifier [PK]
-Name string
-InvoiceDate datetime
-CustomerID uniqueidentifier [ref: > Customer.ID] 
-//TypeID uniqueidentifier   [ref: > ty.ID ,  note: 'Sale or Rental']  
-TotalAmount money
-DeliveryTerms string
-PaymentTerms string
-ValidUntil datetime
-AdditionalTerms string
-RentalStartDate DATE 
-RentalEndDate DATE
-CreatedOn datetime
-ModifiedOn datetime
-CreatedBy string
-ModifiedBy  string
-
-
-}
-
-
-
-
-Table RentalInvoiceLine as ril
-{
-
-ID  uniqueidentifier [pk]
-Name sring
-LineNo  int
-RentalInvoiceID uniqueidentifier [ref: > ri.ID]
-ProductID uniqueidentifier [ref: > p.ID]
-Quantity int  [default: 1]
-UnitCost money 
-TotalAmount money
-CreatedOn datetime
-ModifiedOn datetime
-CreatedBy string
-ModifiedBy  string
-
- Indexes {
-    (RentalInvoiceID, LineNo) [unique]
-  }
-}
 
 
 // If schema name is omitted, it will default to "public" schema.
